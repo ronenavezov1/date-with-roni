@@ -1,0 +1,9 @@
+build/
+.kotlin/
+.gradle/
+.idea/
+*.iml
+*.log
+
+# סודות
+.env

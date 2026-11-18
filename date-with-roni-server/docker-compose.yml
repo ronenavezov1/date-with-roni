@@ -1,0 +1,76 @@
+# ============================================================
+#  שתי רשתות, וזה כל הסיפור של האבטחה כאן:
+#
+#    edge     — עליה יושב ה-api, ואליה יצטרף קונטיינר הפרונט.
+#    backend  — internal: true. אין לה שער יציאה בכלל.
+#
+#  ה-db יושב על backend בלבד, ובלי שום ports. כלומר:
+#  אי אפשר להגיע אליו מהאינטרנט, והוא בעצמו לא יכול לצאת החוצה.
+#  ה-api יושב על שתיהן, אז הוא מדבר גם עם ה-db וגם עם העולם.
+# ============================================================
+
+services:
+
+  db:
+    image: postgres:18-alpine
+    container_name: date-with-roni-db
+    restart: unless-stopped
+
+    # שים לב: אין כאן ports. בכוונה, וזו השורה הכי חשובה בקובץ.
+    # ברגע שמוסיפים "5432:5432" ה-DB חשוף לכל האינטרנט.
+
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-postgres}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?חסר POSTGRES_PASSWORD — צור .env מתוך .env.example}
+
+    volumes:
+      # ב-Postgres 18 השתנה מיקום הדאטה. הנתיב הישן
+      # /var/lib/postgresql/data כבר לא נכון — ראה README.
+      - pgdata:/var/lib/postgresql
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+    networks:
+      - backend
+
+  api:
+    build: .
+    image: date-with-roni-server:0.1.0
+    container_name: date-with-roni-api
+    restart: unless-stopped
+
+    # לא עולה לפני שה-db באמת מוכן לקבל חיבורים,
+    # לא רק "הקונטיינר רץ".
+    depends_on:
+      db:
+        condition: service_healthy
+
+    environment:
+      DATABASE_URL: jdbc:postgresql://db:5432/${POSTGRES_DB:-postgres}
+      DATABASE_USER: ${POSTGRES_USER:-postgres}
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD}
+
+    # nginx שעל המארח מפנה לכאן את /api/.
+    ports:
+      - "127.0.0.1:8080:8080"
+
+    networks:
+      - edge
+      - backend
+
+networks:
+  edge:
+    name: date-with-roni
+  backend:
+    name: date-with-roni-backend
+    internal: true
+
+volumes:
+  pgdata:
+    name: date-with-roni-pgdata

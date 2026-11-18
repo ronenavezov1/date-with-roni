@@ -1,0 +1,25 @@
+{
+  "name": "date-with-roni-website",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "concurrently -n api,web -c magenta,cyan \"node server/index.js\" \"vite\"",
+    "dev": "concurrently -n api,web -c magenta,cyan \"node server/index.js\" \"vite\"",
+    "server": "node server/index.js",
+    "web": "vite",
+    "build": "./deploy.sh",
+    "preview": "vite preview",
+    "build:local": "vite build"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.5",
+    "vite": "^8.2.2"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.122.0",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "nodemailer": "^9.1.0"
+  }
+}

@@ -1,0 +1,34 @@
+# OS junk
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE / editor settings
+.idea/
+.vscode/
+.claude/
+*.iml
+
+# Build output and dependencies
+build/
+.gradle/
+.kotlin/
+node_modules/
+dist/
+
+# Logs
+*.log
+
+# Secrets: server SSH key, server address/passwords and env files never go in git
+mynewserver
+mynewserver.pub
+mynewserverip.txt
+server.env
+.env
+.env.*
+!.env.example
+*.pem
+
+# Personal content: stays on disk and on the server, not in a public repo
+date-with-roni-server/photos/
+date-with-roni-server/src/main/resources/roni-facts.json

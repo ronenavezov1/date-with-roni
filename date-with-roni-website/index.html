@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="שיחה עם העוזר של רוני — אפשר לשאול עליו, לבקש את הוואטסאפ שלו או לקבוע דייט." />
+    <title>דייט עם רוני</title>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+  </head>
+  <body>
+    <div id="app">
+      <main class="landing">
+
+        <header class="hero">
+          <p class="welcome">ברוכה הבאה ל</p>
+          <h1>דייט עם רוני</h1>
+        </header>
+
+        <section class="block signin">
+          <p class="lede">
+            אני ג׳ימיקלוד, הסוכן של רוני. אפשר לשאול אותי עליו כמעט הכל,
+            לראות תמונות, ואם תרצי — אקבע לכם דייט.
+          </p>
+
+          <div id="g-button" class="g-button"></div>
+          <p class="error" id="error" role="alert"></p>
+          <p class="fineprint">רק כדי לוודא שיש כאן בן אדם</p>
+        </section>
+
+      </main>
+
+      <footer class="disclaimer">
+        <p>* רוני לא מודע להתכתבות</p>
+        <p>** AI טיפש ועלול להמציא עליי דברים</p>
+        <p><a href="/privacy.html">מדיניות פרטיות</a></p>
+      </footer>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

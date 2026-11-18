@@ -1,0 +1,724 @@
+:root {
+  --bg: #fdf8f9;
+  --surface: #ffffff;
+  --border: #ecdfe4;
+  --text: #2b232a;
+  --muted: #857b84;
+  --accent: #d93f74;
+  --accent-soft: #fce8ef;
+  --bubble-me: #d93f74;
+  --bubble-me-text: #ffffff;
+  --bubble-agent: #f4eef1;
+  --danger: #c02b3c;
+  --online: #1faa5c;
+  --offline: #c9403f;
+
+  --avatar-bg: #fbe3ec;
+  --avatar-body: #d93f74;
+  --avatar-face: #ffffff;
+  --avatar-pupil: #7d1e40;
+
+  --sans: system-ui, 'Segoe UI', Roboto, 'Noto Sans Hebrew', Arial, sans-serif;
+
+  /* בהיר בלבד. משפיע גם על ה-iframe של גוגל, שנצבע לפי זה. */
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 17px/1.6 var(--sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+#app {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+}
+
+a {
+  color: var(--accent);
+  overflow-wrap: anywhere;
+}
+
+button {
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 22px;
+  background: var(--accent);
+  color: #fff;
+  transition: opacity 0.15s;
+}
+
+button:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ---------------------------------------------------------- */
+/*  האווטאר של ג׳ימיקלוד                                       */
+/* ---------------------------------------------------------- */
+
+.avatar {
+  flex: none;
+  display: block;
+}
+
+.avatar-lg {
+  width: 46px;
+  height: 46px;
+}
+
+.avatar-sm {
+  width: 30px;
+  height: 30px;
+  margin-bottom: 2px;
+}
+
+.av-bg {
+  fill: var(--avatar-bg);
+}
+.av-body,
+.av-bolt {
+  fill: var(--avatar-body);
+}
+.av-face {
+  fill: var(--avatar-face);
+}
+.av-pupil {
+  fill: var(--avatar-pupil);
+}
+.av-stroke {
+  stroke: var(--avatar-body);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  fill: none;
+}
+.av-smile {
+  stroke: var(--avatar-face);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  fill: none;
+}
+
+/* ---------------------------------------------------------- */
+/*  מסכי הכניסה                                                */
+/* ---------------------------------------------------------- */
+
+.landing {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 15vh 22px 20px;
+}
+
+.hero {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.welcome {
+  margin: 0 0 2px;
+  color: var(--muted);
+  font-size: 17px;
+}
+
+.hero h1 {
+  font-size: 40px;
+  letter-spacing: -0.025em;
+  margin: 0;
+}
+
+.block {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 30px 28px;
+}
+
+.lede {
+  margin: 0 0 24px;
+  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.75;
+  text-align: center;
+}
+
+.signin {
+  text-align: center;
+}
+
+.error {
+  min-height: 22px;
+  margin: 12px 0 0;
+  font-size: 15px;
+  color: var(--danger);
+}
+
+.fineprint {
+  margin: 6px 0 0;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.link-button {
+  background: none;
+  color: var(--muted);
+  font-weight: 400;
+  font-size: 15px;
+  text-decoration: underline;
+  padding: 12px;
+  margin-top: 18px;
+}
+
+.signin {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  margin-top: 26px;
+}
+
+/* גוגל מזריקה iframe משלה. אין שליטה על מה שבפנים, רק על המיקום. */
+/* ---------------------------------------------------------- */
+/*  כפתור גוגל                                                 */
+/* ---------------------------------------------------------- */
+
+/* גוגל מגישה את הכפתור בתוך iframe ממקור אחר, ולכן אי אפשר
+   לעצב אותו מכאן. עכשיו כשהאתר בהיר, הרקע שלו פשוט מתיישב. */
+.g-button {
+  /* ה-JS קורא את הערך הזה כדי לחשב רוחב שלא יחרוג אחרי ההגדלה */
+  --g-scale: 1.35;
+
+  min-height: 44px;
+  display: inline-flex;
+  align-self: center;
+  justify-content: center;
+  align-items: center;
+
+  /* size: 'large' הוא התקרה של גוגל, ו-40 פיקסלים זה נמוך.
+     transform לא משנה את הזרימה, ולכן צריך מרווח שיפצה. */
+  transform: scale(var(--g-scale));
+  transform-origin: center;
+  margin-block: 14px 22px;
+}
+
+.g-button.busy {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.signin .error:empty {
+  display: none;
+}
+
+.signin .fineprint {
+  max-width: 34ch;
+  text-align: center;
+}
+
+.chat {
+  /* flex: 1 היה כאן, וזה בדיוק מה ששבר את זה: בעמודת flex
+     הקיצור הזה כולל flex-basis: 0, שגובר על height ומאפשר
+     לשיחה לגדול עם התוכן. */
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  /* גובה קבוע ולא min-height: אחרת השיחה גדלה עם התוכן,
+     הדף כולו נגלל, וההדר נעלם למעלה. */
+  height: 100svh;
+}
+
+.chat-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+/* ---------------------------------------------------------- */
+/*  אחוז ההתאמה — לב שמתמלא                                    */
+/*                                                             */
+/*  המילוי נעשה ב-gradient עם שתי עצירות באותו אחוז, ולא        */
+/*  ב-clip-path: זה נותן קו חד בין המלא לריק, ומאפשר לאותו      */
+/*  path להישאר עם מתאר מלא גם כשהוא כמעט ריק.                  */
+/* ---------------------------------------------------------- */
+
+.match {
+  margin-inline-start: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--accent, #c2185b);
+}
+
+.match .heart {
+  width: 26px;
+  height: 26px;
+  display: block;
+}
+
+.match-num {
+  font-size: 13px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent, #c2185b);
+  min-width: 30px;
+}
+
+/* נפסלה: לב ריק, אפור, עם סדק */
+.match-broken {
+  color: var(--muted, #9aa0a6);
+}
+
+.match[hidden] {
+  display: none;
+}
+
+/* ---------------------------------------------------------- */
+/*  שורת ההתחברות — יושבת במקום תיבת הכתיבה                    */
+/* ---------------------------------------------------------- */
+
+.signin-bar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 16px 18px;
+  border-top: 1px solid var(--line, #eee);
+}
+
+.signin-bar[hidden] {
+  display: none;
+}
+
+.signin-bar .error:empty {
+  display: none;
+}
+
+/* התכונה hidden עובדת דרך display:none של הדפדפן, וכל display
+   מפורש מנצח אותה — לכן החוק הזה חייב להתקיים על הטופס גם. */
+.composer[hidden] {
+  display: none;
+}
+
+.who h1 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.who .status {
+  margin: 0;
+  font-size: 13.5px;
+  color: var(--muted);
+}
+
+/* נקודת החיבור */
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--online);
+  animation: breathe 2.4s ease-in-out infinite;
+}
+
+.dot-off {
+  background: var(--offline);
+  box-shadow: none;
+  animation: none;
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(31, 170, 92, 0.45);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(31, 170, 92, 0);
+  }
+}
+
+.messages {
+  flex: 1;
+  /* בלי זה overflow-y לא עובד: פריט flex מקבל min-height: auto
+     ומסרב להתכווץ מתחת לגובה התוכן שלו, אז הוא גדל במקום לגלול.
+     זו הסיבה שההדר ושורת הכתיבה לא נשארו במקום. */
+  min-height: 0;
+  overflow-y: auto;
+  padding: 22px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.msg {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  max-width: 88%;
+}
+
+.msg-agent,
+.msg-error {
+  align-self: flex-start;
+}
+
+.msg-me {
+  align-self: flex-end;
+}
+
+.bubble {
+  padding: 12px 16px;
+  border-radius: 18px;
+  background: var(--bubble-agent);
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+
+.msg-me .bubble {
+  background: var(--bubble-me);
+  color: var(--bubble-me-text);
+  border-end-end-radius: 5px;
+}
+
+.msg-agent .bubble {
+  border-end-start-radius: 5px;
+}
+
+.msg-me .bubble a {
+  color: #fff;
+}
+
+.msg-error .bubble {
+  background: transparent;
+  border: 1px solid var(--danger);
+  color: var(--danger);
+  font-size: 15px;
+}
+
+.bubble .text {
+  margin: 0;
+}
+
+/* שלוש נקודות "מקליד" */
+
+.dots {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 4px;
+  padding: 5px 0 3px;
+  height: 14px;
+}
+
+.dots i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--muted);
+  animation: bounce 1.25s ease-in-out infinite;
+  /* בלי זה הקפיצה מתחילה משורת הבסיס ונראית כמו קפיצה
+     של הבועה כולה במקום של הנקודה. */
+  transform-origin: center bottom;
+}
+
+.dots i:nth-child(2) {
+  animation-delay: 0.16s;
+}
+.dots i:nth-child(3) {
+  animation-delay: 0.32s;
+}
+
+/* הגל: כל נקודה עולה, מתבהרת וגדלה קצת, ואז נחה. ההשהיה
+   בין השלוש היא מה שהופך שלוש פעימות לגל אחד. */
+@keyframes bounce {
+  0%,
+  70%,
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 0.42;
+  }
+  35% {
+    transform: translateY(-5px) scale(1.12);
+    opacity: 1;
+  }
+}
+
+/* ---------------------------------------------------------- */
+/*  תמונות בהודעות                                             */
+/* ---------------------------------------------------------- */
+
+.bubble .text + .photos {
+  margin-top: 10px;
+}
+
+.photos {
+  display: grid;
+  gap: 6px;
+}
+
+.photos-grid {
+  grid-template-columns: 1fr 1fr;
+}
+
+.photo {
+  padding: 0;
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
+  background: none;
+  cursor: zoom-in;
+  line-height: 0;
+  transition: transform 0.15s;
+}
+
+.photo:hover {
+  transform: scale(1.02);
+  opacity: 1;
+}
+
+.photo:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.photo img {
+  display: block;
+  width: 100%;
+  max-height: 320px;
+  object-fit: cover;
+}
+
+.photos-grid .photo img {
+  aspect-ratio: 1;
+  max-height: none;
+}
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.86);
+  cursor: zoom-out;
+}
+
+.lightbox[hidden] {
+  display: none;
+}
+
+.lightbox img {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 10px;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 14px;
+  inset-inline-end: 14px;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  font-size: 30px;
+  line-height: 1;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+}
+
+body.no-scroll {
+  overflow: hidden;
+}
+
+/* ---------------------------------------------------------- */
+/*  שורת הכתיבה                                                */
+/* ---------------------------------------------------------- */
+
+.composer {
+  display: flex;
+  align-items: flex-end; /* הכפתור נשאר למטה כשהשורה גדלה */
+  gap: 10px;
+  padding: 12px 16px;
+  padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+}
+
+/* אין כלל בסיס ל-textarea בקובץ, ובלי הכלל הזה הדפדפן מצייר
+   פקד ברירת מחדל אפור עם מסגרת חרוטה. */
+.composer textarea {
+  flex: 1;
+  min-width: 0;
+  resize: none;
+  overflow-y: hidden;
+  max-height: 150px;
+
+  font: inherit;
+  line-height: 1.5;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  padding: 11px 18px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.composer textarea::placeholder {
+  color: var(--muted);
+}
+
+.composer textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.composer textarea:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* עגול, לא ריבוע מעוגל — מתיישב עם הבועות ועם שורת הכתיבה */
+.composer button {
+  flex: none;
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border-radius: 50%;
+}
+
+.composer svg {
+  transform: scaleX(-1);
+}
+
+/* הודעת סיום מעל שורת הכתיבה */
+.ended {
+  margin: 0;
+  padding: 12px 20px 0;
+  text-align: center;
+  font-size: 15px;
+  color: var(--muted);
+}
+
+.ended .link-button {
+  margin: 0;
+  padding: 4px 6px;
+}
+
+/* ---------------------------------------------------------- */
+/*  הכיתוב התחתון                                              */
+/* ---------------------------------------------------------- */
+
+.disclaimer {
+  padding: 12px 20px 20px;
+  text-align: center;
+}
+
+.disclaimer p {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: var(--muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dot,
+  .pulse span,
+  .dots i {
+    animation: none;
+    opacity: 0.6;
+  }
+}
+
+.disclaimer a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* ---------------------------------------------------------- */
+/*  שיחה על מסך רחב                                            */
+/* ---------------------------------------------------------- */
+
+/* במובייל השיחה תופסת את כל המסך וזה נכון. על מסך רחב היא
+   מוגבלת ל-720px, ואז ההדר ושורת הכתיבה — שיש להם רקע משלהם —
+   נראים כשני פסים תלושים עם קצוות חתוכים באמצע המסך.
+   כרטיס אחד תחום פותר את זה: הרקע והמסגרת עוטפים את הכל. */
+@media (min-width: 780px) {
+  .chat {
+    flex: none;
+    /* min-height: 100svh מהכלל הבסיסי גובר על height ומותח את
+       הכרטיס מעבר למסך. צריך לאפס אותו במפורש. */
+    min-height: 0;
+    height: calc(100svh - 56px);
+    margin: 28px auto;
+
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    overflow: hidden; /* מחתך את הפינות של ההדר ושורת הכתיבה */
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.10);
+  }
+
+  /* בתוך הכרטיס הם כבר על אותו רקע, וההפרדה נעשית בקו בלבד */
+  .chat-header,
+  .composer {
+    background: transparent;
+  }
+
+  .disclaimer {
+    padding-bottom: 14px;
+  }
+}
+
+
+/* שורת סיום: שני כפתורי טקסט זה לצד זה.
+   [hidden] חייב לבוא אחרי — התכונה עובדת דרך display:none
+   בגיליון של הדפדפן, וכל display מפורש כאן מנצח אותה. */
+.ended[hidden] {
+  display: none;
+}
+
+.ended {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.ended .link-button:disabled {
+  opacity: 0.55;
+  cursor: default;
+  text-decoration: none;
+}

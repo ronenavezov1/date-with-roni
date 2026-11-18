@@ -1,0 +1,61 @@
+# ============================================================
+#  פריסה לשרת. רק ה-api.
+#
+#  ה-DB לא כאן בכוונה: על השרת כבר רץ קונטיינר postgres:16
+#  עם הטבלה chicks בתוכו. compose המלא היה מרים Postgres שני
+#  עם volume ריק, והטבלה הייתה "נעלמת" בזמן שהיא בטוב בקונטיינר
+#  הישן. אז מתחברים לקיים.
+#
+#      docker compose -f docker-compose.server.yml up -d --build
+# ============================================================
+
+services:
+
+  api:
+    build: .
+    image: date-with-roni-server:0.1.0
+    container_name: date-with-roni-api
+    restart: unless-stopped
+
+    environment:
+      # postgres הוא שם הקונטיינר הקיים, ו-DNS של דוקר פותר אותו
+      # בתוך הרשת. ה-DB בשם postgres הוא זה שמכיל את chicks.
+      DATABASE_URL: jdbc:postgresql://postgres:5432/postgres
+      DATABASE_USER: ${POSTGRES_USER:-postgres}
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD:?חסר POSTGRES_PASSWORD ב-.env}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:?חסר GOOGLE_CLIENT_ID ב-.env}
+
+      # המכונה קטנה. בריכה של 5 חיבורים מספיקה בשפע.
+      DB_POOL_SIZE: "5"
+
+      # ---- הסוכן ----
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:?חסר ANTHROPIC_API_KEY ב-.env}
+      ANTHROPIC_WORKSPACE_ID: ${ANTHROPIC_WORKSPACE_ID:-}
+      ANTHROPIC_MODEL_FAST: ${ANTHROPIC_MODEL_FAST:-claude-opus-5}
+      ANTHROPIC_MODEL_SMART: ${ANTHROPIC_MODEL_SMART:-claude-opus-5}
+
+      RONI_WHATSAPP_NUMBER: ${RONI_WHATSAPP_NUMBER:-}
+
+      # התמונות מגיעות מ-volume, לא מהתמונה עצמה.
+      TOKEN_BUDGET: ${TOKEN_BUDGET:-500000}
+      LOW_POWER_AT: ${LOW_POWER_AT:-50000}
+      PHOTOS_DIR: /app/photos
+
+    volumes:
+      # לקריאה בלבד, ומחוץ ל-image: אפשר להוסיף או להחליף תמונה
+      # ולהפעיל מחדש, בלי לבנות את הכל מהתחלה.
+      - ./photos:/app/photos:ro
+
+    # nginx שעל המארח מפנה לכאן את /api/. רק 127.0.0.1.
+    ports:
+      - "127.0.0.1:8080:8080"
+
+    networks:
+      - postgres
+
+networks:
+  # הרשת שקונטיינר ה-Postgres כבר יושב עליה. external אומר
+  # לדוקר להצטרף אליה ולא לנסות ליצור אותה.
+  postgres:
+    name: postgres_default
+    external: true
